@@ -1,0 +1,33 @@
+@import "../../styles/variables";
+
+.code-input {
+    flex-direction: column;
+    gap: $margin-xxxs;
+
+    width: 40px;
+
+    .input-container {
+        input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+
+            border: none;
+            outline:none;
+
+            background-color: $input-bg;
+            border-radius: $border-radius-xxs;
+
+            padding: $padding-xs;
+
+            transition: outline 0.3s ease;
+
+            &:focus {
+                outline: 2px solid $primary-bg;
+            }
+        }
+    }
+}
+

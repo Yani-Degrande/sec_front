@@ -1,0 +1,89 @@
+// ======= Colors =======
+
+$primary-color: #000;
+$error-color: #ff0000;
+
+// ========= Background Colors =========
+$primary-bg: #f1e2d1;
+$primary-bg-hover: #e2d1bd;
+
+$input-bg: #f8f6f4;
+
+// ====== Border Colors ======
+
+// ====== Font Family ======
+
+$font-family-primary: "Poppins", sans-serif;
+
+// ====== Border Radius ======
+$border-radius-xxxs: 0.25rem;
+$border-radius-xxs: 0.5rem;
+$border-radius-xs: 1rem;
+$border-radius-s: 1.5rem;
+$border-radius-m: 2rem;
+$border-radius-l: 2.5rem;
+$border-radius-xl: 3rem;
+$border-radius-xxl: 3.5rem;
+$border-radius-xxxl: 4rem;
+
+// ====== Font Sizes ======
+
+$font-size-xxxs: 11px;
+$font-size-xxs: 12px;
+$font-size-xs: 14px;
+$font-size-s: 16px;
+$font-size-m: 18px;
+$font-size-l: 20px;
+$font-size-xl: 24px;
+$font-size-xxl: 28px;
+$font-size-xxxl: 32px;
+
+// ====== Font Weights ======
+$font-weight-light: 100;
+$font-weight-regular: 400;
+$font-weight-medium: 600;
+$font-weight-bold: 700;
+
+// ====== Font Line Heights ======
+
+$font-line-height-xxs: 16px;
+$font-line-height-xs: 18px;
+$font-line-height-s: 20px;
+$font-line-height-m: 22px;
+$font-line-height-l: 24px;
+$font-line-height-xl: 28px;
+$font-line-height-xxl: 32px;
+$font-line-height-xxxl: 36px;
+
+// ====== Font Spacing ======
+
+$font-spacing-xxs: 0.1px;
+$font-spacing-xs: 0.2px;
+$font-spacing-s: 0.3px;
+$font-spacing-m: 0.4px;
+$font-spacing-l: 0.5px;
+$font-spacing-xl: 0.6px;
+$font-spacing-xxl: 0.7px;
+$font-spacing-xxxl: 0.8px;
+
+// ====== Margin ======
+$margin-xxxs: 0.25rem;
+$margin-xxs: 0.5rem;
+$margin-xs: 1rem;
+$margin-s: 1.5rem;
+$margin-m: 2rem;
+$margin-l: 2.5rem;
+$margin-xl: 3rem;
+$margin-xxl: 3.5rem;
+$margin-xxxl: 4rem;
+
+// ====== Padding ======
+$padding-xxxs: 0.25rem;
+$padding-xxs: 0.5rem;
+$padding-xs: 1rem;
+$padding-s: 1.5rem;
+$padding-m: 2rem;
+$padding-l: 2.5rem;
+$padding-xl: 3rem;
+$padding-xxl: 3.5rem;
+$padding-xxxl: 4rem;

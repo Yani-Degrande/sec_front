@@ -1,0 +1,70 @@
+@import "../../styles/variables";
+
+.two-factor-auth {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 100vh;
+
+  gap: $margin-xs;
+
+  .lock-icon {
+    align-items: center;
+    justify-content: center;
+
+    font-size: 2.5rem;
+
+    background-color: $primary-bg;
+
+    border-radius: 50%;
+
+    width: 5rem;
+    height: 5rem;
+
+    padding: $padding-xs;
+  }
+
+  &__title {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+
+    p {
+      font-size: $font-size-xxs;
+      font-weight: $font-weight-light;
+      color: #505050;
+    }
+  }
+
+  .countdown {
+    font-size: $font-size-xxs;
+    font-weight: $font-weight-light;
+    margin-top: $margin-xxs;
+    color: #505050;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .form-group {
+      flex-direction: row;
+      gap: $margin-xxs;
+    }
+  }
+
+  .cancel {
+    color: #505050;
+    font-size: $font-size-xxs;
+    font-weight: $font-weight-light;
+
+    cursor: pointer;
+
+    transform: translateY(-10px);
+  }
+}

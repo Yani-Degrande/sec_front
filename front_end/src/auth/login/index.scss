@@ -1,0 +1,142 @@
+@import "../../styles/variables";
+
+.login {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 100vh;
+
+  &__container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: $margin-xs;
+  }
+
+  &__top {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: $margin-xs;
+  }
+
+  .login-title {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+
+    p {
+      font-size: $font-size-xxs;
+      font-weight: $font-weight-light;
+      color: #505050;
+    }
+  }
+
+  &__socials {
+    width: 100%;
+
+    .google-login {
+      border: 1px solid $primary-bg;
+      border-radius: $border-radius-xxs;
+
+      justify-content: center;
+      align-items: center;
+
+      width: 100%;
+
+      user-select: none;
+
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      img {
+        width: 30px;
+        height: 30px;
+      }
+
+      &:hover {
+        background-color: $primary-bg;
+        outline: 2px solid $primary-bg;
+      }
+    }
+  }
+
+  &__divider {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    user-select: none;
+
+    span {
+      font-size: $font-size-xxs;
+      font-weight: $font-weight-light;
+      color: #dbd7d7;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &::before,
+      &::after {
+        content: "";
+        display: block;
+
+        width: calc(100px - #{$margin-xs});
+        height: 1px;
+
+        background-color: #dbd7d7;
+      }
+
+      &::before {
+        margin-right: $margin-xs;
+      }
+
+      &::after {
+        margin-left: $margin-xs;
+      }
+    }
+  }
+
+  &__forgot-password {
+    user-select: none;
+
+    width: 100%;
+
+    transform: translateY(-10px);
+
+    a {
+      font-size: $font-size-xxxs;
+      font-weight: $font-weight-light;
+      color: #505050;
+
+      float: right;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+
+    .form-group {
+      flex-direction: column;
+      gap: $margin-xxs;
+    }
+  }
+  &__error {
+    font-size: $font-size-xxxs;
+    font-weight: $font-weight-light;
+    color: $error-color;
+
+    transform: translateY(-10px);
+  }
+}

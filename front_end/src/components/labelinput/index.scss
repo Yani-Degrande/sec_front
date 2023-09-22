@@ -1,0 +1,42 @@
+@import "../../styles/variables";
+
+.label-input {
+  flex-direction: column;
+  gap: $margin-xxxs;
+
+  label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $primary-color;
+
+    user-select: none;
+  }
+
+  .input-container {
+    input {
+      border: none;
+      outline: none;
+
+      background-color: $input-bg;
+      border-radius: $border-radius-xxs;
+
+      padding: $padding-xxs $padding-xs;
+
+      transition: outline 0.3s ease;
+
+      &:focus {
+        outline: 2px solid $primary-bg;
+      }
+    }
+
+    .password-toggle {
+      cursor: pointer;
+      transform: translate(179px, -23px);
+
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+}

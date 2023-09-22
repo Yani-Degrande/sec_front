@@ -1,0 +1,32 @@
+@import "../../styles/_variables.scss";
+
+.primary-btn {
+  background-color: $primary-bg;
+  color: $primary-color;
+
+  width: 100%;
+
+  border: none;
+  outline: none;
+  border-radius: $border-radius-xxs;
+
+  padding: $padding-xxs $padding-xs;
+
+  cursor: pointer;
+
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+
+  transition: all 0.3s ease-in-out;
+
+  user-select: none;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background-color: $primary-bg-hover;
+    outline: 2px solid $primary-bg;
+  }
+}
