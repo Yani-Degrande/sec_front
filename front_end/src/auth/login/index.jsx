@@ -112,7 +112,7 @@ const Login = () => {
               />
             </div>
             <div className="login__forgot-password">
-              <a href="/">Forgot Password?</a>
+              <a href="/change-password">Forgot Password?</a>
             </div>
             <Button
               label={loading ? "Loading..." : "Login"}

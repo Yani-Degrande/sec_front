@@ -1,0 +1,92 @@
+@import "../../../styles/variables";
+
+.email-form {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 100vh;
+
+  &__container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: min-content;
+
+    gap: $margin-xl;
+  }
+
+  &__icon {
+    align-items: center;
+    justify-content: center;
+
+    font-size: 2.5rem;
+
+    background-color: $primary-error;
+
+    border-radius: 50%;
+
+    width: 5rem;
+    height: 5rem;
+
+    padding: $padding-xs;
+
+    user-select: none;
+  }
+
+  &__title {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: $margin-xxs;
+    text-align: center;
+
+    user-select: none;
+
+    p {
+      font-size: $font-size-xxs;
+      font-weight: $font-weight-light;
+      color: #505050;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: $margin-xs;
+    margin: 0 $margin-m;
+
+    .cancel {
+      color: #505050;
+      font-size: $font-size-xxs;
+      font-weight: $font-weight-light;
+
+      align-self: center;
+
+      cursor: pointer;
+
+      transform: translateY(-10px);
+    }
+  }
+
+  &__error {
+    font-size: $font-size-xxxs;
+    font-weight: $font-weight-light;
+    color: $error-color;
+    text-align: center;
+
+    transform: translateY(-50px);
+  }
+
+  &__success {
+    font-size: $font-size-xxxs;
+    font-weight: $font-weight-light;
+    text-align: center;
+
+    transform: translateY(-50px);
+  }
+}

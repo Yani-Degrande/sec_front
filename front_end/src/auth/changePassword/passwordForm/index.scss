@@ -1,0 +1,133 @@
+@import "../../../styles/variables";
+.password-form {
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  min-height: 100vh;
+  overflow: hidden;
+
+  &__container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: min-content;
+    gap: $margin-xl;
+  }
+
+  &__requirements {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    gap: $margin-xs;
+    p {
+      font-size: $font-size-xxs;
+      font-weight: $font-weight-light;
+      color: #505050;
+    }
+    ul {
+      li {
+        font-size: $font-size-xxs;
+        font-weight: $font-weight-light;
+        color: #505050;
+
+        b {
+          font-weight: $font-weight-bold;
+          color: black;
+        }
+      }
+    }
+  }
+
+  &__error {
+    font-size: $font-size-xxxs;
+    font-weight: $font-weight-light;
+    color: $error-color;
+    text-align: center;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    transform: translateY(5px);
+  }
+
+  &__success {
+    font-size: $font-size-xxxs;
+    font-weight: $font-weight-light;
+    text-align: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    margin: 0 $margin-l;
+
+    .form-group {
+      flex-direction: column;
+
+      &:first-child {
+        transform: translateY(5px);
+      }
+    }
+    .cancel {
+      color: #505050;
+      font-size: $font-size-xxs;
+      font-weight: $font-weight-light;
+
+      align-self: center;
+
+      cursor: pointer;
+      transform: translateY(10px);
+    }
+  }
+
+  .progress-bar {
+    background-color: rgb(163, 163, 163);
+    height: 5px;
+
+    border-radius: 7.5px;
+
+    transition: all 0.2s ease-in-out;
+  }
+
+  .strength-label {
+    color: rgb(163, 163, 163);
+    font-size: $font-size-xxs;
+    margin-bottom: $margin-xxxs;
+  }
+
+  .progress-bar-container {
+    margin-bottom: $margin-xs;
+
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+  }
+
+  .progress-bar {
+    &.strength-0 {
+      background-color: rgb(250, 114, 114);
+    }
+
+    &.strength-1 {
+      background-color: rgb(243, 189, 90);
+    }
+
+    &.strength-2 {
+      background-color: rgb(243, 243, 139);
+    }
+
+    &.strength-3 {
+      background-color: rgb(116, 224, 116);
+    }
+
+    &.strength-4 {
+      background-color: rgb(130, 130, 243);
+    }
+  }
+}

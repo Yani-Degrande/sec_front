@@ -7,10 +7,18 @@ import { verify, deleteUniqueToken } from "../../api/2fa";
 import { FiLock } from "react-icons/fi";
 
 const TwoFactorAuth = () => {
-  const [errorMessages, setErrorMessages] = useState([]);
+  // ==================== State ====================
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
+  const [errorMessages, setErrorMessages] = useState([]);
+
   const [completed, setCompleted] = useState(false); // State to track code completion
+  const [submitted, setSubmitted] = useState(false); // Boolean flag to prevent multiple submissions
+
+  const [code, setCode] = useState(["", "", "", "", "", ""]); // State to track code input values
+
+  const [timer, setTimer] = useState(null); // Timer variable
+  const countdownDuration = 240; // Countdown duration in seconds (adjust as needed)
+  const [countdown, setCountdown] = useState(countdownDuration);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,6 +26,18 @@ const TwoFactorAuth = () => {
   const queryParams = new URLSearchParams(location.search);
   const uniqueToken = queryParams.get("token");
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  // ==================== Functions ====================
+
+  console.log(loading);
+
+  // Delete the unique token from the database
   const deleteToken = useCallback(async () => {
     try {
       await deleteUniqueToken({ jwtToken: uniqueToken });
@@ -26,12 +46,7 @@ const TwoFactorAuth = () => {
     }
   }, [uniqueToken]);
 
-  const [code, setCode] = useState(["", "", "", "", "", ""]);
-
-  const [timer, setTimer] = useState(null); // Timer variable
-  const countdownDuration = 120; // Countdown duration in seconds (adjust as needed)
-  const [countdown, setCountdown] = useState(countdownDuration);
-
+  // Start the timer
   const startTimer = useCallback(() => {
     if (timer === null) {
       setCountdown(countdownDuration);
@@ -43,6 +58,7 @@ const TwoFactorAuth = () => {
     }
   }, [timer]);
 
+  // Clear the timer
   const clearTimer = useCallback(() => {
     // Clear the timer when the code is successfully submitted
     if (timer) {
@@ -50,19 +66,18 @@ const TwoFactorAuth = () => {
     }
   }, [timer]);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
-
+  // Reset the form
   const resetForm = useCallback(() => {
     setCode(["", "", "", "", "", ""]); // Reset the code input values
     reset(); // Reset the React Hook Form state
-    document.getElementById("code0").focus(); // Focus on the first input field
+    try {
+      document.getElementById("code0").focus(); // Focus on the first input field
+    } catch (err) {
+      console.log(err);
+    }
   }, [reset]);
 
+  // Submit the form
   const onSubmit = useCallback(async () => {
     const codeString = code.join(""); // Combine individual input values
     setLoading(true);
@@ -71,42 +86,19 @@ const TwoFactorAuth = () => {
         code: codeString,
         jwtToken: uniqueToken,
       };
-      const response = await verify(credentials);
-      setData(response);
-      resetForm(); // Reset the form upon successful submission
+      await verify(credentials);
       clearTimer(); // Clear the timer
       setErrorMessages([]);
+      navigate("/dashboard");
     } catch (err) {
       setErrorMessages([err.response.data.code]);
+      resetForm();
     } finally {
       setLoading(false);
-      resetForm();
     }
-  }, [code, uniqueToken, resetForm, clearTimer]);
+  }, [code, uniqueToken, resetForm, clearTimer, navigate]);
 
-  useEffect(() => {
-    // Set a timeout to clear error messages after 60 seconds (60000 milliseconds)
-    const timeoutId = setTimeout(() => {
-      setErrorMessages([]);
-    }, 60000);
-
-    // Cleanup the timeout when the component unmounts
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  useEffect(() => {
-    startTimer(); // Start the timer when the component is mounted
-    return () => clearTimer(); // Cleanup: clear the timer when unmounting
-  }, []);
-
-  useEffect(() => {
-    if (countdown === 0) {
-      deleteToken();
-      navigate("/");
-      clearTimer();
-    }
-  }, [countdown, navigate, clearTimer, deleteToken]);
-
+  // Handle code input change
   const handleCodeChange = (e, index) => {
     const value = e.target.value;
     if (/^[0-9]$/.test(value) && index >= 0 && index < 6) {
@@ -121,6 +113,44 @@ const TwoFactorAuth = () => {
     }
   };
 
+  // Format the remaining time as "mm:ss"
+  const formattedCountdown = `${Math.floor(countdown / 60)
+    .toString()
+    .padStart(2, "0")}:${(countdown % 60).toString().padStart(2, "0")}`;
+
+  // ==================== Effects ====================
+
+  // Clear error messages after 60 seconds
+  useEffect(() => {
+    // Set a timeout to clear error messages after 60 seconds (60000 milliseconds)
+    const timeoutId = setTimeout(() => {
+      setErrorMessages([]);
+    }, 60000);
+
+    // Cleanup the timeout when the component unmounts
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  // Start the timer when the component is mounted
+  useEffect(() => {
+    startTimer(); // Start the timer when the component is mounted
+    return () => clearTimer(); // Cleanup: clear the timer when unmounting
+  }, [clearTimer, startTimer]);
+
+  // Redirect to the login page when the timer reaches 0
+  useEffect(() => {
+    if (countdown === 0) {
+      try {
+        deleteToken();
+      } catch (err) {
+        console.log(err);
+      }
+      navigate("/");
+      clearTimer();
+    }
+  }, [countdown, navigate, clearTimer, deleteToken]);
+
+  // Handle backspace key press
   useEffect(() => {
     const handleKeyDown = (e, index) => {
       if (e.key === "Backspace" && index > 0) {
@@ -143,22 +173,20 @@ const TwoFactorAuth = () => {
     });
   }, [code]);
 
+  // Check if code is completed
   useEffect(() => {
     // Check if all code fields are filled
     const isCodeCompleted = code.every((value) => /^[0-9]$/.test(value));
     setCompleted(isCodeCompleted);
 
-    if (completed) {
+    if (completed && !submitted) {
       onSubmit(); // Automatically submit the form when code is completed
       setCompleted(false); // Reset the state
+      setSubmitted(true); // Set the boolean flag to prevent multiple submissions
     }
-  }, [code, onSubmit, completed]);
+  }, [code, onSubmit, completed, submitted]);
 
-  // Format the remaining time as "mm:ss"
-  const formattedCountdown = `${Math.floor(countdown / 60)
-    .toString()
-    .padStart(2, "0")}:${(countdown % 60).toString().padStart(2, "0")}`;
-
+  // ==================== Render ====================
   return (
     <div className="two-factor-auth flex">
       <div className="lock-icon flex">
@@ -194,12 +222,6 @@ const TwoFactorAuth = () => {
       <a href="/" className="cancel" onClick={deleteToken}>
         Cancel
       </a>
-      {data ? (
-        <div>
-          <p>{data.refreshToken}</p>
-          <p>{data.accesToken}</p>
-        </div>
-      ) : null}
     </div>
   );
 };
