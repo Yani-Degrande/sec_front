@@ -22,3 +22,8 @@ export const forgotPassword = async (email) => {
   const response = await axios.post(`${baseUrl}/forgot-password`, email);
   return response.data;
 };
+
+export const resetPassword = async (data) => {
+  const response = await axios.post(`${baseUrl}/reset-password`, data);
+  return response.data;
+};

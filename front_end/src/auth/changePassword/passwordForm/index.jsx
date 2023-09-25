@@ -2,12 +2,16 @@
 import "./index.scss";
 // - Import dependencies
 import React, { useState, useEffect } from "react";
-import { useForm, FormProvider, set } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 import zxcvbn from "zxcvbn";
 
 // - Import components
 import LabelInput from "../../../components/labelinput";
 import Button from "../../../components/button";
+
+// - Import api
+import { resetPassword } from "../../../api/users";
 
 const validationRules = {
   password: {
@@ -36,8 +40,6 @@ const validationRules = {
   },
 };
 
-// - Import api
-
 // - Create ChangePassword component function
 const PasswordForm = () => {
   // - Declare a new state variable, which we'll call "email"
@@ -46,6 +48,9 @@ const PasswordForm = () => {
   const [success, setSuccess] = useState(false);
 
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get("token");
 
   const handlePasswordChange = (event) => {
     const password = event.target.value;
@@ -67,8 +72,22 @@ const PasswordForm = () => {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    const credentials = {
+      password: data.password,
+      repeatPassword: data.repeatPassword,
+      token: token,
+    };
     // - Call the API to send the email
     try {
+      const response = await resetPassword(credentials);
+      if (response.status === 302) {
+        setError(
+          "2FA is enabled. Please check your email for a verification code."
+        );
+        throw new Error(
+          "2FA is enabled. Please check your email for a verification code."
+        );
+      }
       setSuccess(true);
       setError(null);
     } catch (error) {
