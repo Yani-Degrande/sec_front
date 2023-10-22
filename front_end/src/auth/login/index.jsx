@@ -1,44 +1,68 @@
 // Import dependencies
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
-
-// Import Styles
-import "./index.scss";
 
 // Import Components
 import LabelInput from "../../components/labelinput";
 import Button from "../../components/button";
 
-// Import Services
-import { login } from "../../api/users";
+// Import Context
+import { UserContext } from "../../context/UserProvider";
 
 // - Import Images
 import googleIcon from "../../assets/images/Google_Icons-09-512.webp";
 
-const Login = () => {
-  const navigate = useNavigate();
-  const [errorMessages, setErrorMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
+// Import Styles
+import "./index.scss";
 
-  // Use a state variable to track whether an error is currently displayed
-  const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
+const validationRules = {
+  email: {
+    required: "Email is required",
+  },
+  password: {
+    required: "Password is required",
+  },
+};
+
+const Login = () => {
+  // ================== Context ==================
+
+  const { login, loading, error } = useContext(UserContext);
+
+  // ================== States ==================
+
+  // - Error States
+  const [errorMessages, setErrorMessages] = useState([]);
+
+  // ================== Variables ==================
+
+  const navigate = useNavigate();
+
+  // ================== Variables ==================
+
+  const formRef = useRef();
+
+  // ================== Functions ==================
+
+  // Function to handle the enter key press
+  const handleEnterKeyPress = (event) => {
+    // 13 is the enter key code
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
 
   // Function to clear error messages
   const clearErrorMessages = () => {
     setErrorMessages([]);
-    setIsErrorDisplayed(false);
   };
 
-  useEffect(() => {
-    // Set a timeout to clear error messages after 60 seconds (60000 milliseconds)
-    const timeoutId = setTimeout(clearErrorMessages, 60000);
+  // ================== Form ==================
 
-    // Cleanup the timeout when the component unmounts or if error messages change
-    return () => clearTimeout(timeoutId);
-  }, [errorMessages]);
-
+  // - Register form
   const {
     register,
     handleSubmit,
@@ -46,30 +70,39 @@ const Login = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  // Function to handle form submission
   const onSubmit = async (data) => {
-    setLoading(true);
-    try {
-      const credentials = {
-        email: data.email,
-        password: data.password,
-      };
-      const response = await login(credentials);
-      if (response.status === 302) {
-        const uniqueToken = response.uniqueToken;
-
-        navigate(`/2fa?token=${uniqueToken}`);
-      }
-      setData(response);
-      reset();
-      clearErrorMessages(); // Clear error messages upon successful submission
-    } catch (err) {
-      setIsErrorDisplayed(true); // Set the flag to indicate that an error is displayed
-      setErrorMessages(err.response.data.code);
-    } finally {
-      reset();
-      setLoading(false);
+    const credentials = {
+      email: data.email,
+      password: data.password,
+    };
+    const repsonse = await login(credentials);
+    if (repsonse) {
+      navigate(repsonse);
     }
+    reset();
   };
+
+  // ================== Google Login ==================
+
+  const googleLogin = useGoogleLogin({
+    flow: "auth-code",
+    onSuccess: async (codeResponse) => {
+      console.log(codeResponse);
+    },
+    onError: (errorResponse) => console.log(errorResponse),
+  });
+
+  // ================== Effects ==================
+
+  useEffect(() => {
+    const timeoutId = setTimeout(clearErrorMessages, 60000);
+
+    // Cleanup the timeout when the component unmounts or if error messages change
+    return () => clearTimeout(timeoutId);
+  }, [errorMessages]);
+
+  // ================== Render ==================
 
   return (
     <div className="login flex">
@@ -80,7 +113,7 @@ const Login = () => {
             <p>Please enter your details to continue</p>
           </div>
           <div className="login__socials flex">
-            <div className="google-login flex">
+            <div className="google-login flex" onClick={() => googleLogin()}>
               <img src={googleIcon} alt="google" />
             </div>
           </div>
@@ -89,26 +122,26 @@ const Login = () => {
           </div>
         </div>
 
-        <FormProvider {...{ register, handleSubmit, errors }}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+        <FormProvider
+          {...{ register, handleSubmit, formState: { errors, isSubmitting } }}
+        >
+          <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group flex">
               <LabelInput
                 label="Email"
                 name="email"
                 type="email"
-                validationRules={{
-                  required: "Email is required",
-                }}
-                isInvalid={errors.email}
+                validationRules={validationRules}
+                isInvalid={errors.email || error}
+                errors={errors}
               />
               <LabelInput
                 label="Password"
                 name="password"
                 type="password"
-                validationRules={{
-                  required: "Password is required",
-                }}
-                isInvalid={errors.password}
+                validationRules={validationRules}
+                isInvalid={errors.password || error}
+                errors={errors}
               />
             </div>
             <div className="login__forgot-password">
@@ -117,23 +150,18 @@ const Login = () => {
             <Button
               label={loading ? "Loading..." : "Login"}
               type="submit"
-              isInvalid={errors.length > 0}
               isSubmitting={isSubmitting}
+              onKeyDown={handleEnterKeyPress}
             />
           </form>
         </FormProvider>
-        {isErrorDisplayed ? (
+        {error ? (
           <div className="login__error flex">
-            <p>{errorMessages}</p>
+            <p>{error}</p>
           </div>
         ) : null}
       </div>
-      {data ? (
-        <div>
-          <p>{data.refreshToken}</p>
-          <p>{data.accesToken}</p>
-        </div>
-      ) : null}
+      {/* {user ? navigate("/dashboard") : null} */}
     </div>
   );
 };

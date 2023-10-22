@@ -1,10 +1,12 @@
 // - Import dependencies
 import React, { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 // - Import components
 import LabelInput from "../../../components/labelinput";
 import Button from "../../../components/button";
+import PopUp from "../../../components/pop-up";
 
 // - Import API
 import { forgotPassword } from "../../../api/users";
@@ -19,6 +21,8 @@ const EmailForm = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -30,7 +34,12 @@ const EmailForm = () => {
     setLoading(true);
     // - Call the API to send the email
     try {
-      await forgotPassword({ email: data.email });
+      const response = await forgotPassword({ email: data.email });
+      if (response.redirectToVerification) {
+        navigate("/auth/change-password/verify", {
+          state: { email: data.email },
+        });
+      }
       setSuccess(true);
       setError(null);
     } catch (error) {
@@ -94,14 +103,17 @@ const EmailForm = () => {
             <p>{error}</p>
           </div>
         )}
-        {success && (
-          <div className="email-form__success">
-            <p>
-              We've sent you an email with a link to reset your password. If you
-              don't see the email, please check your spam folder.
-            </p>
-          </div>
-        )}
+
+        <PopUp
+          state="success"
+          showPopup={success}
+          onClose={() => setSuccess(false)}
+        >
+          <p>
+            We've sent you an email with a link to reset your password. If you
+            don't see the email, please check your spam folder.
+          </p>
+        </PopUp>
       </div>
     </div>
   );

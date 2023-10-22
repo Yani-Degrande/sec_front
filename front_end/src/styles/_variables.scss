@@ -7,6 +7,9 @@ $error-color: #ff0000;
 $primary-bg: #f1e2d1;
 $primary-bg-hover: #e2d1bd;
 $primary-error: #f0d1d1;
+$primary-error-hover: #e2c1c1;
+$primary-field-error: #fadfdf;
+$primary-field-error-border: #ff7474;
 
 $input-bg: #f8f6f4;
 
@@ -15,6 +18,15 @@ $input-bg: #f8f6f4;
 // ====== Font Family ======
 
 $font-family-primary: "Poppins", sans-serif;
+
+// ====== Breakpoints ======
+$breakpoint-xxs: 320px;
+$breakpoint-xs: 480px;
+$breakpoint-s: 768px;
+$breakpoint-m: 1024px;
+$breakpoint-l: 1200px;
+$breakpoint-xl: 1440px;
+$breakpoint-xxl: 1600px;
 
 // ====== Border Radius ======
 $border-radius-xxxs: 0.25rem;

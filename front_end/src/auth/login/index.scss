@@ -141,3 +141,11 @@
     transform: translateY(-10px);
   }
 }
+
+.error-message {
+  font-size: $font-size-xxxs;
+  font-weight: $font-weight-light;
+  color: $error-color;
+
+  transform: translateY(-10px);
+}

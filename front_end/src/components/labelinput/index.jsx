@@ -15,6 +15,7 @@ const LabelInput = ({
   isInvalid,
   validationRules,
   onChange,
+  errors,
   ...rest
 }) => {
   const { register, isSubmitting } = useFormContext();
@@ -25,11 +26,11 @@ const LabelInput = ({
   };
 
   return (
-    <div className={`label-input flex ${isInvalid}`}>
+    <div className={`label-input flex ${isInvalid ? "invalid" : null}`}>
       <label htmlFor={name}>{label}</label>
       <div className="input-container">
         <input
-          {...register(name, validationRules)}
+          {...register(name, validationRules[name])}
           type={showPassword ? "text" : type}
           name={name}
           id={name}
@@ -43,6 +44,17 @@ const LabelInput = ({
             {showPassword ? <FiEyeOff /> : <FiEye />}
           </div>
         )}
+        {errors
+          ? errors[name] && (
+              <div
+                className={`input__error flex ${
+                  type === "password" ? "pwd" : null
+                }`}
+              >
+                <p>{errors[name].message}</p>
+              </div>
+            )
+          : null}
       </div>
     </div>
   );

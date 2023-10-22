@@ -1,14 +1,40 @@
-import { useState, useEffect, useCallback } from "react";
+// - Import Dependencies
+import { useState, useEffect, useCallback, useContext } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./index.scss";
+
+// - Import Components
 import CodeInput from "../../components/codeInput";
+
+// - Import Context
 import { verify, deleteUniqueToken } from "../../api/2fa";
+import { AuthContext } from "../../context/AuthProvider";
+
+// - Import Icons
 import { FiLock } from "react-icons/fi";
 
+// - Styling
+import "./index.scss";
+
 const TwoFactorAuth = () => {
+  // ==================== Context ====================
+
+  const { loading, error, deleteToken, verifyCode } = useContext(AuthContext);
+
+  // ==================== Variables ====================
+
+  const countdownDuration = 240; // Countdown duration in seconds (adjust as needed)
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const queryParams = new URLSearchParams(location.search);
+  const uniqueToken = queryParams.get("token");
+
+  const state = location.state;
+
   // ==================== State ====================
-  const [loading, setLoading] = useState(false);
+
   const [errorMessages, setErrorMessages] = useState([]);
 
   const [completed, setCompleted] = useState(false); // State to track code completion
@@ -17,14 +43,9 @@ const TwoFactorAuth = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]); // State to track code input values
 
   const [timer, setTimer] = useState(null); // Timer variable
-  const countdownDuration = 240; // Countdown duration in seconds (adjust as needed)
   const [countdown, setCountdown] = useState(countdownDuration);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const queryParams = new URLSearchParams(location.search);
-  const uniqueToken = queryParams.get("token");
+  // ==================== React Hook Form ====================
 
   const {
     register,
@@ -35,16 +56,8 @@ const TwoFactorAuth = () => {
 
   // ==================== Functions ====================
 
-  console.log(loading);
-
-  // Delete the unique token from the database
-  const deleteToken = useCallback(async () => {
-    try {
-      await deleteUniqueToken({ jwtToken: uniqueToken });
-    } catch (err) {
-      console.log(err);
-    }
-  }, [uniqueToken]);
+  if (state && state.email) {
+  }
 
   // Start the timer
   const startTimer = useCallback(() => {
@@ -77,26 +90,35 @@ const TwoFactorAuth = () => {
     }
   }, [reset]);
 
-  // Submit the form
   const onSubmit = useCallback(async () => {
     const codeString = code.join(""); // Combine individual input values
-    setLoading(true);
+
     try {
-      const credentials = {
-        code: codeString,
-        jwtToken: uniqueToken,
-      };
-      await verify(credentials);
+      if (state.email) {
+        await verifyCode({
+          code: codeString,
+          jwtToken: uniqueToken,
+          email: state.email,
+        });
+      }
+
+      await verifyCode({ code: codeString, jwtToken: uniqueToken });
+      // If verification is successful, proceed with these actions:
       clearTimer(); // Clear the timer
-      setErrorMessages([]);
       navigate("/dashboard");
-    } catch (err) {
-      setErrorMessages([err.response.data.code]);
       resetForm();
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Verification error:", error);
     }
-  }, [code, uniqueToken, resetForm, clearTimer, navigate]);
+  }, [
+    code,
+    uniqueToken,
+    resetForm,
+    clearTimer,
+    navigate,
+    verifyCode,
+    state.email,
+  ]);
 
   // Handle code input change
   const handleCodeChange = (e, index) => {

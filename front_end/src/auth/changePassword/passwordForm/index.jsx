@@ -3,12 +3,13 @@ import "./index.scss";
 // - Import dependencies
 import React, { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import zxcvbn from "zxcvbn";
 
 // - Import components
 import LabelInput from "../../../components/labelinput";
 import Button from "../../../components/button";
+import PopUp from "../../../components/pop-up";
 
 // - Import api
 import { resetPassword } from "../../../api/users";
@@ -46,18 +47,31 @@ const PasswordForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [succesCountdown, setSuccessCountdown] = useState(20);
 
   const [passwordStrength, setPasswordStrength] = useState(0);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get("token");
+  const navigate = useNavigate();
 
   const handlePasswordChange = (event) => {
     const password = event.target.value;
     const strength = zxcvbn(password).score;
     setPasswordStrength(strength);
-    console.log(strength);
   };
+
+  useEffect(() => {
+    if (success) {
+      const intervalId = setInterval(() => {
+        setSuccessCountdown((prevState) => prevState - 1);
+      }, 1000);
+      setTimeout(() => {
+        navigate("/");
+      }, 20000);
+      return () => clearInterval(intervalId);
+    }
+  }, [success, navigate]);
 
   const {
     register,
@@ -203,15 +217,18 @@ const PasswordForm = () => {
             </a>
           </form>
         </FormProvider>
-
-        {success && (
-          <div className="password-form__success">
+        <PopUp
+          children={
             <p>
-              You successfully changed your password. You can now close this
-              window and log in with your new password.
+              You successfully changed your password. You can now log in with
+              your new password. This window will automatically close in{" "}
+              <strong>{succesCountdown}</strong> seconds.
             </p>
-          </div>
-        )}
+          }
+          state={"success"}
+          showPopup={success}
+          onClose={() => setSuccess(false)}
+        />
       </div>
     </div>
   );

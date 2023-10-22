@@ -1,0 +1,98 @@
+@import "../../styles/variables";
+
+.popup {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+
+  padding: $padding-xs;
+  margin-left: $margin-s;
+  z-index: 1000;
+
+  justify-content: space-between;
+  align-items: center;
+
+  transform: translateX(120%);
+  transition: transform 0.5s ease-in-out;
+  max-width: 550px; /* Set the width as needed */
+  border-radius: $border-radius-xxs $border-radius-xxs;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background-color: white;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &__icon {
+    font-size: $font-size-xxxl;
+
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+
+    align-items: center;
+    justify-content: center;
+
+    @media screen and (max-width: $breakpoint-s) {
+      width: 50px;
+      height: 50px;
+    }
+  }
+
+  &__content {
+    margin-left: $margin-s;
+    max-width: calc(100% - 75px - #{$margin-s});
+
+    position: relative;
+  }
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  h2 {
+    margin: 0;
+    font-size: 18px; /* Adjust the font size as needed */
+  }
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  font-size: 18px; /* Adjust the font size as needed */
+  line-height: 1;
+  cursor: pointer;
+  color: #ccc; /* Lighter close button color */
+
+  position: absolute;
+  transition: color 0.3s ease-in-out;
+
+  top: -10px;
+  right: 0;
+
+  &:hover {
+    color: #000; /* Darker close button color */
+  }
+}
+
+.popup-content {
+  p {
+    margin: 0;
+    font-size: 14px; /* Adjust the font size as needed */
+  }
+}
+.popup-progress {
+  margin-top: 10px;
+  height: 5px; /* Set the desired height of the progress bar */
+  background-color: #ccc; /* Background color of the progress bar container */
+  border-radius: 5px; /* Border radius of the progress bar container */
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #007acc; /* Progress bar color */
+  transition: width 1s linear; /* Adjust the animation duration as needed */
+  border-radius: 5px;
+}

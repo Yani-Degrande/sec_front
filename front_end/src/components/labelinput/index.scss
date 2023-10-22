@@ -1,5 +1,20 @@
 @import "../../styles/variables";
 
+.input {
+  &__error {
+    color: $error-color;
+    font-size: $font-size-xxxs;
+
+    margin-top: $margin-xxxs;
+    margin-left: $margin-xxxs;
+    margin-bottom: $margin-xxxs;
+
+    &.pwd {
+      transform: translateY(-$margin-xs);
+    }
+  }
+}
+
 .label-input {
   flex-direction: column;
   gap: $margin-xxxs;
@@ -10,6 +25,16 @@
     color: $primary-color;
 
     user-select: none;
+  }
+  &.invalid {
+    .input-container {
+      input {
+        outline: 2px solid $primary-field-error-border;
+        &:focus {
+          outline: 2px solid $primary-field-error-border;
+        }
+      }
+    }
   }
 
   .input-container {
