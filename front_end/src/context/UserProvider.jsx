@@ -18,7 +18,7 @@ export const UserProvider = ({ children }) => {
   const login = async (data) => {
     try {
       const response = await loginUser(data);
-      if (response.status === 302) {
+      if (response.redirectToVerification) {
         return `/2fa?token=${response.uniqueToken}`;
       }
       setUser(response);

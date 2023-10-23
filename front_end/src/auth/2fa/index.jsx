@@ -7,7 +7,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CodeInput from "../../components/codeInput";
 
 // - Import Context
-import { verify, deleteUniqueToken } from "../../api/2fa";
 import { AuthContext } from "../../context/AuthProvider";
 
 // - Import Icons
@@ -19,7 +18,8 @@ import "./index.scss";
 const TwoFactorAuth = () => {
   // ==================== Context ====================
 
-  const { loading, error, deleteToken, verifyCode } = useContext(AuthContext);
+  const { error, deleteToken, verifyCode, verifyPasswordResetCode } =
+    useContext(AuthContext);
 
   // ==================== Variables ====================
 
@@ -34,8 +34,6 @@ const TwoFactorAuth = () => {
   const state = location.state;
 
   // ==================== State ====================
-
-  const [errorMessages, setErrorMessages] = useState([]);
 
   const [completed, setCompleted] = useState(false); // State to track code completion
   const [submitted, setSubmitted] = useState(false); // Boolean flag to prevent multiple submissions
@@ -55,6 +53,11 @@ const TwoFactorAuth = () => {
   } = useForm();
 
   // ==================== Functions ====================
+
+  // Format the remaining time as "mm:ss"
+  const formattedCountdown = `${Math.floor(countdown / 60)
+    .toString()
+    .padStart(2, "0")}:${(countdown % 60).toString().padStart(2, "0")}`;
 
   if (state && state.email) {
   }
@@ -90,19 +93,28 @@ const TwoFactorAuth = () => {
     }
   }, [reset]);
 
+  // Handle form submission
   const onSubmit = useCallback(async () => {
     const codeString = code.join(""); // Combine individual input values
 
     try {
-      if (state.email) {
-        await verifyCode({
-          code: codeString,
-          jwtToken: uniqueToken,
-          email: state.email,
-        });
-      }
-
+      // if (state?.email) {
+      //   await verifyPasswordResetCode({
+      //     code: codeString,
+      //     jwtToken: uniqueToken,
+      //   });
+      //   // If verification is successful, proceed with these actions:
+      //   clearTimer(); // Clear the timer
+      //   navigate("/change-password");
+      //   resetForm();
+      // } else {
       await verifyCode({ code: codeString, jwtToken: uniqueToken });
+      // If verification is successful, proceed with these actions:
+      clearTimer(); // Clear the timer
+      navigate("/dashboard");
+      resetForm();
+      // }
+
       // If verification is successful, proceed with these actions:
       clearTimer(); // Clear the timer
       navigate("/dashboard");
@@ -110,15 +122,7 @@ const TwoFactorAuth = () => {
     } catch (error) {
       console.error("Verification error:", error);
     }
-  }, [
-    code,
-    uniqueToken,
-    resetForm,
-    clearTimer,
-    navigate,
-    verifyCode,
-    state.email,
-  ]);
+  }, [code, uniqueToken, resetForm, clearTimer, navigate, verifyCode]);
 
   // Handle code input change
   const handleCodeChange = (e, index) => {
@@ -135,23 +139,7 @@ const TwoFactorAuth = () => {
     }
   };
 
-  // Format the remaining time as "mm:ss"
-  const formattedCountdown = `${Math.floor(countdown / 60)
-    .toString()
-    .padStart(2, "0")}:${(countdown % 60).toString().padStart(2, "0")}`;
-
   // ==================== Effects ====================
-
-  // Clear error messages after 60 seconds
-  useEffect(() => {
-    // Set a timeout to clear error messages after 60 seconds (60000 milliseconds)
-    const timeoutId = setTimeout(() => {
-      setErrorMessages([]);
-    }, 60000);
-
-    // Cleanup the timeout when the component unmounts
-    return () => clearTimeout(timeoutId);
-  }, []);
 
   // Start the timer when the component is mounted
   useEffect(() => {
@@ -228,18 +216,18 @@ const TwoFactorAuth = () => {
                 name={`code${index}`}
                 value={value}
                 onChange={(e) => handleCodeChange(e, index)}
-                isInvalid={errorMessages.length > 0 ? "is-invalid" : ""}
+                isInvalid={error ? "is-invalid" : ""}
               />
             ))}
           </div>
         </form>
       </FormProvider>
       <div className="two-factor-auth__error flex">
-        {errorMessages.length > 0 ? (
+        {error && (
           <div className="login__error flex">
-            <p>{errorMessages[0]}</p>
+            <p>{error}</p>
           </div>
-        ) : null}
+        )}
       </div>
       <a href="/" className="cancel" onClick={deleteToken}>
         Cancel

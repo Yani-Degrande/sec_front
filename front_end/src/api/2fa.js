@@ -21,3 +21,11 @@ export const deleteUniqueToken = async (credentials) => {
   const response = await axios.post(`${baseUrl}/delete`, credentials);
   return response.data;
 };
+
+export const verifyPasswordReset = async (credentials) => {
+  const response = await axios.post(
+    `${baseUrl}/verify-password-reset`,
+    credentials
+  );
+  return response.data;
+};

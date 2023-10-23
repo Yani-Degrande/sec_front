@@ -36,7 +36,7 @@ const EmailForm = () => {
     try {
       const response = await forgotPassword({ email: data.email });
       if (response.redirectToVerification) {
-        navigate("/auth/change-password/verify", {
+        navigate(`/auth/change-password/verify?token=${response.uniqueToken}`, {
           state: { email: data.email },
         });
       }

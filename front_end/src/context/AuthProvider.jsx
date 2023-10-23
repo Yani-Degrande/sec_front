@@ -1,8 +1,8 @@
 // - Import Dependencies
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 // - Import Services
-import { verify, deleteUniqueToken } from "../api/2fa";
+import { verify, deleteUniqueToken, verifyPasswordReset } from "../api/2fa";
 
 export const AuthContext = createContext();
 
@@ -35,10 +35,41 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyPasswordResetCode = async ({ code, jwtToken }) => {
+    try {
+      setLoading(true);
+      await verifyPasswordReset({ code, jwtToken });
+      setError(null);
+    } catch (err) {
+      setError(err.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ================== Effects ==================
 
+  // Clear error messages after 60 seconds
+  useEffect(() => {
+    // Set a timeout to clear error messages after 60 seconds (60000 milliseconds)
+    const timeoutId = setTimeout(() => {
+      setError([]);
+    }, 60000);
+
+    // Cleanup the timeout when the component unmounts
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ loading, error, deleteToken, verifyCode }}>
+    <AuthContext.Provider
+      value={{
+        loading,
+        error,
+        deleteToken,
+        verifyCode,
+        verifyPasswordResetCode,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
