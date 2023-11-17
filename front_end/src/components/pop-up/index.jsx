@@ -23,9 +23,8 @@ const states = {
   },
 };
 
-const PopUp = ({ children, state, onClose, countDown = 20, showPopup }) => {
+const PopUp = ({ children, state, onClose, countDown = 5, showPopup }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [progress, setProgress] = useState(100);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,23 +39,11 @@ const PopUp = ({ children, state, onClose, countDown = 20, showPopup }) => {
     };
   }, [countDown, onClose, showPopup]);
 
-  useEffect(() => {
-    const interval = 100 / (countDown * 1000);
-    const progressInterval = setInterval(() => {
-      setProgress((prevProgress) => prevProgress - interval);
-    }, 1000);
-
-    // Clear the interval when progress reaches 0
-    if (progress <= 0) {
-      clearInterval(progressInterval);
-    }
-
-    return () => {
-      clearInterval(progressInterval);
-    };
-  }, [countDown, progress]);
   return (
-    <div className={`popup ${isVisible ? "show" : ""} flex`}>
+    <div
+      className={`popup ${isVisible ? "show" : ""} flex`}
+      style={{ borderLeft: `6px solid ${states[state].color}` }}
+    >
       <div
         className="popup__icon flex"
         style={{ backgroundColor: states[state].color }}
@@ -73,8 +60,10 @@ const PopUp = ({ children, state, onClose, countDown = 20, showPopup }) => {
         <div className="popup-content">{children}</div>
         <div className="popup-progress">
           <div
-            className="progress-bar"
-            style={{ width: `${Math.round(progress)}%` }}
+            className={`progress-bar ${showPopup ? "show" : ""}`}
+            style={{
+              backgroundColor: states[state].color,
+            }}
           ></div>
         </div>
       </div>
