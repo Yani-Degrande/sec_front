@@ -110,8 +110,8 @@ const EmailForm = () => {
           onClose={() => setSuccess(false)}
         >
           <p>
-            We've sent you an email with a link to reset your password. If you
-            don't see the email, please check your spam folder.
+            An email has been sent with a password reset link. Please check your
+            inbox to reset your password.
           </p>
         </PopUp>
       </div>

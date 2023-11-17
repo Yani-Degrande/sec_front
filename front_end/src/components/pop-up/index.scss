@@ -14,7 +14,7 @@
 
   transform: translateX(120%);
   transition: transform 0.5s ease-in-out;
-  max-width: 550px; /* Set the width as needed */
+  max-width: 450px; /* Set the width as needed */
   border-radius: $border-radius-xxs $border-radius-xxs;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   background-color: white;
@@ -26,22 +26,16 @@
   &__icon {
     font-size: $font-size-xxxl;
 
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
 
     align-items: center;
     justify-content: center;
-
-    @media screen and (max-width: $breakpoint-s) {
-      width: 50px;
-      height: 50px;
-    }
   }
 
   &__content {
-    margin-left: $margin-s;
-    max-width: calc(100% - 75px - #{$margin-s});
+    max-width: calc(100% - 50px - #{$margin-s});
 
     position: relative;
   }
@@ -53,7 +47,7 @@
   align-items: center;
   h2 {
     margin: 0;
-    font-size: 18px; /* Adjust the font size as needed */
+    font-size: 16px; /* Adjust the font size as needed */
   }
 }
 
@@ -79,20 +73,33 @@
 .popup-content {
   p {
     margin: 0;
-    font-size: 14px; /* Adjust the font size as needed */
+    font-size: 12px; /* Adjust the font size as needed */
   }
 }
 .popup-progress {
-  margin-top: 10px;
+  width: 90%;
+
   height: 5px; /* Set the desired height of the progress bar */
-  background-color: #ccc; /* Background color of the progress bar container */
-  border-radius: 5px; /* Border radius of the progress bar container */
-  position: relative;
+  background-color: #e4e4e4; /* Background color of the progress bar container */
+  border-radius: 15px; /* Border radius of the progress bar container */
+
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 
 .progress-bar {
   height: 100%;
-  background-color: #007acc; /* Progress bar color */
+  width: 100%;
   transition: width 1s linear; /* Adjust the animation duration as needed */
-  border-radius: 5px;
+  border-radius: 15px;
+
+  &.show {
+    animation: progress 5s linear;
+  }
+}
+
+@keyframes progress {
+  100% {
+    width: 0px;
+  }
 }
